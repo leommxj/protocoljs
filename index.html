@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ProtocolJS</title>
+		<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.1/build/pure-min.css" >
+		<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/grids-responsive-min.css" />
+		<style>
+			#resultEdit{
+				height: 75vh;
+			} 
+
+			#inputEdit{
+				height: 50vh;
+			} 
+
+			#protocolEdit{
+				height: 20vh;
+			} 
+			div{
+				font-size:auto;
+			}
+		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		<div class="pure-g"><h1 style="letter-spacing: 0em;">ProtocolJS</h1></div>
+		<div class="pure-g">
+			<div class="pure-u-1-24"> </div>
+			<div class="pure-u-10-24"> 
+				<div id="inputEdit"></div> 
+				<div style="height:5vh"></div>
+				<div id="protocolEdit"></div> 
+			</div>
+			<div class="pure-u-1-24"> </div>
+			<div class="pure-u-11-24"> <div id="resultEdit"></div> </div>
+		</div>
+		<div class="pure-g" style="height:5vh"></div>
+		<div class="pure-g"><button class="pure-button pure-button-primary" style="margin:auto;font-size:125%" onclick="go()">Do Ascii Art</button></div>
+		<script src="./protocol.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			var inputEdit = ace.edit("inputEdit");
+			inputEdit.setValue("Input Code");
+			var resultEdit = ace.edit("resultEdit");
+			resultEdit.setValue("Generated Ascii Art will be displayed here");
+			var protocolEdit = ace.edit("protocolEdit");
+			protocolEdit.setValue("protocol header description here");
+			function go(){
+				var inputText = inputEdit.session.getValue();
+				protocoljs.parse(inputText);
+				protocolEdit.session.setValue(inputText);
+				resultEdit.session.setValue(protocoljs.toString());
+			};
+		</script>
+	</body>
+</html>
