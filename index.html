@@ -16,15 +16,23 @@
 			#protocolEdit{
 				height: 20vh;
 			} 
-			div{
-				font-size:auto;
+			.top h1 {
+				border-top-left-radius: .5em; -moz-border-radius-topleft: .5em;
+				border-bottom-right-radius: .5em; -moz-border-radius-bottomright: .5em;
+				text-shadow: black 0 0 1.25px;
+				display: table;
+				/* background-color: #2c5f85; color: white; */
+				background-color: #234d6b; color: white;
+				margin-top: .5em 0 .5em 0;
+				padding: .2em;
 			}
 		</style>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<div class="pure-g">
-			<div class="pure-u-16-24">
+		<div class="pure-g top">
+			<div class="pure-u-1-24"></div>
+			<div class="pure-u-15-24">
 				<h1 style="letter-spacing: 0em;">ProtocolJS</h1>
 			</div>
 			<div class="pure-u-8-24" style="margin: auto">
@@ -46,6 +54,7 @@
 		<div class="pure-g" style="height:5vh"></div>
 		<div class="pure-g"><button class="pure-button pure-button-primary" style="margin:auto;font-size:125%" onclick="go()">Do Ascii Art</button></div>
 		<script src="./protocol.js"></script>
+		<script src="./parser.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js" type="text/javascript" charset="utf-8"></script>
 		<script>
 			var inputEdit = ace.edit("inputEdit");
@@ -73,6 +82,9 @@
 				protocolEdit.session.setValue(protocoljs.specs[_proto]);
 				protocoljs.parse(protocoljs.specs[_proto]);
 				resultEdit.session.setValue(protocoljs.toString());
+			};
+			window.onerror = function(message, source, lineno, colno, error) {
+				alert(message + error);
 			};
 		</script>
 	</body>

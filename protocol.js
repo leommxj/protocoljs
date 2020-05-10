@@ -65,6 +65,18 @@
         ProtocolJS.fromPyStruct = function(code) {
             alert("TODO");
         };
+        
+        ProtocolJS._clearCfg = function() {
+            this.hdr_char_start="+";
+            this.hdr_char_end="+";
+            this.hdr_char_fill_odd="+" ;
+            this.hdr_char_fill_even="-" ;
+            this.hdr_char_sep="|" ;
+            this.bits_per_line=32 ;
+            this.do_print_top_tens=true;
+            this.do_print_top_units=true;
+            this.field_list=[];
+        }
 
         ProtocolJS.parse = function(spec) {
             var fields;
@@ -80,7 +92,7 @@
                 throw "FATAL: Character \"?\" may only be used as an option separator.";
             }
             var items = fields.split(",");
-            this.field_list = [];
+            this._clearCfg();
             items.forEach(function(item, index){
                 [text, bits] = item.split(":");
                 bits = parseInt(bits);
@@ -286,6 +298,9 @@
                 cur_field = this.field_list[i];
                 cur_field["MF"] = false;
                 available_in_line = this.bits_per_line - bits_in_line;
+                if((typeof(cur_field["len"]) != "number") || (cur_field["len"] !== cur_field["len"])){
+                    throw "FATAL: Wrong field list";
+                }
                 // enough bits left
                 if(available_in_line >= cur_field["len"]){
                     new_fields.push(cur_field);
