@@ -23,7 +23,16 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 	<body>
-		<div class="pure-g"><h1 style="letter-spacing: 0em;">ProtocolJS</h1></div>
+		<div class="pure-g">
+			<div class="pure-u-16-24">
+				<h1 style="letter-spacing: 0em;">ProtocolJS</h1>
+			</div>
+			<div class="pure-u-8-24" style="margin: auto">
+				<span style="font-size:1rem">Well-Known Protocol:</span>
+				<select id="wellKnownSelect" onChange="select_well_known()">
+				</select>
+			</div>
+		</div>
 		<div class="pure-g">
 			<div class="pure-u-1-24"> </div>
 			<div class="pure-u-10-24"> 
@@ -45,10 +54,24 @@
 			resultEdit.setValue("Generated Ascii Art will be displayed here");
 			var protocolEdit = ace.edit("protocolEdit");
 			protocolEdit.setValue("protocol header description here");
+			var wellKnownSelect = document.getElementById("wellKnownSelect");
+			for (var k in protocoljs.specs){
+				var new_option = document.createElement("option");
+				new_option.text = k;
+				wellKnownSelect.add(new_option)
+
+			}
 			function go(){
 				var inputText = inputEdit.session.getValue();
 				protocoljs.parse(inputText);
 				protocolEdit.session.setValue(inputText);
+				resultEdit.session.setValue(protocoljs.toString());
+			};
+
+			function select_well_known(){
+				var _proto = wellKnownSelect.selectedOptions[0].text;
+				protocolEdit.session.setValue(protocoljs.specs[_proto]);
+				protocoljs.parse(protocoljs.specs[_proto]);
 				resultEdit.session.setValue(protocoljs.toString());
 			};
 		</script>
