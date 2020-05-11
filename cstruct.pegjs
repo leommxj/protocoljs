@@ -1,15 +1,18 @@
 struct 
-= _ 'struct'_ cident _ '{' _
+= _ 'struct'_ cident* _ '{' _
 	d:(declareStmt/macroExp)*
-_'}'';'? _ {return d}
+_'}'_ cident? _ ';'?{return d}
 
 declareStmt
-= _ (modifier/signtype/lentype)* _ type:typeExp _ name:nameExp _ len:arrayExp? _ ('=' _ value _)? ';' _
-{return {'type':type, 'name':name ,'len':len}}
+= _ (modifier/signtype _)* _ lentype:(lentype/typeExp)? _ ptr:ptrExp? _ name:nameExp _ len:arrayExp? _ ('=' _ value _)? ';' _
+{return {'type':ptr?"*":lentype, 'name':name ,'len':len}}
+
+ptrExp
+= ("*" _)+
 
 typeExp
-= 	type:(cident _ '*'* _)
-	{return type.join("").split(" ").join("")}
+= 	type:(cident _ )
+	{return type[0]}
 
 arrayExp
 = 	'[' _ value:digest _ ']'
@@ -34,11 +37,10 @@ modifier
 = "violate" / "const" / "static" 
 
 lentype
-= "short" / "long"
-
+= "long long int" / "long long" / "long int" / "short int" / "long" /"short"
 
 _ "whitespace"
-  = [ \t\n\r]*
+  = $[ \t\n\r]*
 
 cident 
 = $[A-Za-z0-9_]+

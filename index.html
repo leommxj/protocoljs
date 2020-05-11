@@ -45,7 +45,12 @@
 			<div class="pure-u-1-24"> </div>
 			<div class="pure-u-10-24"> 
 				<div id="inputEdit"></div> 
-				<div style="height:5vh"></div>
+				<div style="height:5vh">
+					<span style="font-size:1rem">Language/Platform:</span>
+					<select id="langSelect">
+						<option value="proto_desc">Protocol Desciption</option>
+					</select>
+				</div>
 				<div id="protocolEdit"></div> 
 			</div>
 			<div class="pure-u-1-24"> </div>
@@ -70,10 +75,28 @@
 				wellKnownSelect.add(new_option)
 
 			}
+			var langSelect = document.getElementById("langSelect");
+			for(var k in protocoljs.ctype_len){
+				var new_option = document.createElement("option");
+				new_option.text = "C Struct - " + k;
+				new_option.value = k;
+				langSelect.add(new_option);
+			}
 			function go(){
 				var inputText = inputEdit.session.getValue();
-				protocoljs.parse(inputText);
-				protocolEdit.session.setValue(inputText);
+				var lang = langSelect.selectedOptions[0].value;
+				if(lang == "proto_desc"){
+					protocoljs.parse(inputText);
+					protocolEdit.session.setValue(inputText);
+				}else{
+					var protoText = protocoljs.fromCStruct(inputText, lang);
+					if(protoText == null){
+						alert("wrong input");
+						return ;
+					}
+					protocoljs.parse(protoText);
+					protocolEdit.session.setValue(protoText);
+				}
 				resultEdit.session.setValue(protocoljs.toString());
 			};
 

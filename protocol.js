@@ -45,6 +45,42 @@
             "cotp_dt": "Length:8,PDU Type:8,Num. & LDU:8?bits=24", 
             "icmpv6-rsol": "Type:8,Code:8,Checksum:16,Reserved:32,Options:64"
         };
+
+        ProtocolJS.ctype_len = {
+            "ILP32":{
+                "char": 8,
+                "short": 16,
+                "short int": 16,
+                "int": 32,
+                "long": 32,
+                "long int": 32,
+                "long long": 64,
+                "long long int": 64,
+                "*": 32
+            },
+            "LP64":{
+                "char": 8,
+                "short": 16,
+                "short int": 16,
+                "int": 32,
+                "long int": 64,
+                "long long": 64,
+                "long long int": 64,
+                "*": 64
+            },
+            "LLP64":{
+                "char": 8,
+                "short": 16,
+                "short int": 16,
+                "int": 32,
+                "long": 32,
+                "long int": 32,
+                "long long": 64,
+                "long long int": 64,
+                "*": 64
+            },
+        }
+
         ProtocolJS.hdr_char_start="+";
         ProtocolJS.hdr_char_end="+";
         ProtocolJS.hdr_char_fill_odd="+" ;
@@ -54,8 +90,31 @@
         ProtocolJS.do_print_top_tens=true;
         ProtocolJS.do_print_top_units=true;
         ProtocolJS.field_list=[];
-        ProtocolJS.fromCStruct = function(code) {
-            alert("TODO");
+        ProtocolJS.fromCStruct = function(code, platform) {
+            if(this.ctype_len[platform] == null){
+                return null;
+            }
+            var fields;
+            try{
+                var fields = peg.parse(code);
+            }catch{
+                return null;
+            }
+            var r = "";
+            for(var i=0;i<fields.length;i++){
+                r += fields[i]["name"] + ":";
+                var len ,typelen = this.ctype_len[platform][fields[i]["type"]];
+                if(typelen == null){
+                    return null;
+                }
+                if(fields[i]["len"] != null){
+                    len = typelen * fields[i]["len"];
+                }else{
+                    len = typelen;
+                }
+                r += len + ","
+            }
+            return r.slice(0,-1);
         };
 
         ProtocolJS.fromPyConstruct = function(code) {
@@ -81,7 +140,7 @@
         ProtocolJS.parse = function(spec) {
             var fields;
             var opts;
-            if(spec.indexOf("?") !== -1) {
+            if (spec.indexOf("?") !== -1) {
                 var _spec = spec.split("?");
                 fields = _spec[0];
                 opts = _spec[1];
